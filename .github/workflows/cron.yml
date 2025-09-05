@@ -1,12 +1,12 @@
-name: Run every minute
+name: Run every 5 minutes
 
 on:
   schedule:
     - cron: '*/5 * * * *'
  
 jobs:
-  build:
-    name: PR Verify
+  cron:
+    name: Run every 5 minutes
     runs-on: ubuntu-latest
 
     steps:
