@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: 
+      - main
 
 jobs:
   build:
@@ -10,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
@@ -19,16 +21,17 @@ jobs:
           cache: true
           cache-dependency-path: "**/packages.lock.json"
 
-      - name: dotnet restore
+      - name: Restore dependencies
         run: dotnet restore --locked-mode
 
-      - name: dotnet test
+      - name: Run tests
         run: dotnet test --configuration Release --no-restore
 
-      - name: dotnet publish
+      - name: Publish application
         run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release -o artifacts
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: dometrain-artifact
           path: artifacts/
@@ -39,12 +42,20 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
           name: dometrain-artifact
           path: artifacts/
 
-      - name: "Deploy to Azure App Service"
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
           app-name: app-dometrain-github-actions-erisjakupi-dev
