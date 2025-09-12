@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -14,15 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0
+          dotnet-version: '8.0.x'
           cache: true
-          cache-dependency-path: "**/packages.lock.json"
+          cache-dependency-path: |
+            **/*.sln
+            **/*.csproj
+            **/nuget.config
 
       - name: Restore dependencies
-        run: dotnet restore --locked-mode
+        run: dotnet restore
 
       - name: Run tests
         run: dotnet test --configuration Release --no-restore
