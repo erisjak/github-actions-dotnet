@@ -18,11 +18,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0
-          cache: true
+          dotnet-version: '8.0.x'
+          cache: 'nuget'
 
       - name: Restore dependencies
         run: dotnet restore --locked-mode
@@ -62,4 +62,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: app-dometrain-github-actions-erisjakupi-dev
-          package: artifacts/
+          package: artifacts
