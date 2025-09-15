@@ -2,8 +2,12 @@ name: CI
 
 on:
   push:
-    branches:
+    branches: 
       - main
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build:
@@ -18,14 +22,10 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-          cache: true
-          cache-dependency-path: |
-            **/*.sln
-            **/*.csproj
-            **/nuget.config
+          cache: 'nuget'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore --locked-mode
 
       - name: Run tests
         run: dotnet test --configuration Release --no-restore
@@ -62,4 +62,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: app-dometrain-github-actions-erisjakupi-dev
-          package: artifacts/
+          package: artifacts
