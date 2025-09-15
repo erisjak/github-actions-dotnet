@@ -63,3 +63,5 @@ jobs:
         with:
           app-name: app-dometrain-github-actions-erisjakupi-dev
           package: artifacts
+
+          
