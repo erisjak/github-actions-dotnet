@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: 
+    branches:
       - main
 
 permissions:
@@ -23,12 +23,22 @@ jobs:
         with:
           dotnet-version: '8.0.x'
           cache: true
+          cache-dependency-path: |
+            **/packages.lock.json
+            **/global.json
+            **/nuget.config
 
-      - name: Run tests
-        run: dotnet test --configuration Release --no-restore
+      - name: Restore (locked)
+        run: dotnet restore --locked-mode
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --nologo
 
       - name: Publish application
-        run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release -o artifacts
+        run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release --no-build -o artifacts
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
