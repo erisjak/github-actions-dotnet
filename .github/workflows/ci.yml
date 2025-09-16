@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: 
+    branches:
       - main
 
 permissions:
@@ -18,20 +18,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0
+          dotnet-version: '8.0.x'
           cache: true
+          cache-dependency-path: |
+            **/packages.lock.json
+            **/global.json
+            **/nuget.config
 
-      - name: Restore dependencies
+      - name: Restore (locked)
         run: dotnet restore --locked-mode
 
-      - name: Run tests
-        run: dotnet test --configuration Release --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --nologo
 
       - name: Publish application
-        run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release -o artifacts
+        run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release --no-build -o artifacts
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -62,4 +69,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: app-dometrain-github-actions-erisjakupi-dev
-          package: artifacts/
+          package: artifacts
