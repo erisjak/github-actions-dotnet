@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: 
+    branches:
       - main
 
 permissions:
@@ -18,20 +18,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0
+          dotnet-version: 8.0.x
           cache: true
 
-      - name: Restore dependencies
-        run: dotnet restore --locked-mode
+      - name: Restore dependencies (locked)
+        run: dotnet restore GitHubActionsDotNet.sln --locked-mode
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-restore
+        run: dotnet test GitHubActionsDotNet.sln --configuration Release --no-restore
 
       - name: Publish application
-        run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release -o artifacts
+        run: dotnet publish src/GitHubActionsDotNet.Api/GitHubActionsDotNet.Api.csproj --configuration Release -o artifacts --no-restore
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -43,7 +43,7 @@ jobs:
     name: Deploy Dev
     runs-on: ubuntu-latest
     needs: build
-    environment: dev 
+    environment: dev
 
     steps:
       - name: Download artifact
@@ -64,7 +64,6 @@ jobs:
         with:
           app-name: app-dometrain-github-actions-erisjakupi-dev
           package: artifacts/
-
 
   deploy_prod:
     name: Deploy Prod
@@ -88,8 +87,3 @@ jobs:
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
-        with:
-          app-name: app-dometrain-github-actions-erisjakupi-prod
-          package: artifacts/
-
-  
