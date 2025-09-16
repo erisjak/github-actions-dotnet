@@ -22,11 +22,15 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+<<<<<<< HEAD
           cache: true
           cache-dependency-path: |
             **/packages.lock.json
             **/global.json
             **/nuget.config
+=======
+          cache: 'nuget'
+>>>>>>> db1230914fdee1c82855a96cd9f3615bbc403af7
 
       - name: Restore (locked)
         run: dotnet restore --locked-mode
