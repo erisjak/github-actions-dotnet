@@ -40,11 +40,12 @@ jobs:
           path: artifacts/
 
   deploy_dev:
-    name: Deploy Dev
+    name: Deploy Dev  
     needs: build
     uses: ./.github/workflows/step-deploy.yml 
     with:
       env: dev
+    secrets: inherit
 
 
   deploy_prod:
@@ -53,3 +54,4 @@ jobs:
     uses: ./.github/workflows/step-deploy.yml 
     with:
       env: prod
+    secrets: inherit 
