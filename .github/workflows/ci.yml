@@ -25,7 +25,7 @@ jobs:
           cache: true
 
       - name: Restore dependencies (locked)
-        run: dotnet restore GitHubActionsDotNet.sln --locked-mode
+        run: dotnet restore GitHubActionsDotNet.sln 
 
       - name: Run tests
         run: dotnet test GitHubActionsDotNet.sln --configuration Release --no-restore
