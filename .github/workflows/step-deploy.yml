@@ -15,9 +15,23 @@ on:
         required: true
 
 jobs:
+  # First job to check environment and provide clear messaging
+  check_environment:
+    name: Check Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if environment is production
+        if: inputs.env == 'prod'
+        run: |
+          echo "::error::Production deployments are not supported. Please use 'dev' environment only."
+          exit 1
+          
+  # Only runs if the environment is not 'prod'
   deploy:
     name: Deploy ${{ inputs.env }}
+    needs: check_environment
     runs-on: ubuntu-latest
+    if: inputs.env != 'prod'
     environment: ${{ inputs.env }}
 
     steps:
