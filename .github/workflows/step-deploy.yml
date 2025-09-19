@@ -40,3 +40,5 @@ jobs:
           app-name: app-dometrain-github-actions-erisjakupi-${{ inputs.env }}
           package: artifacts/
                         
+
+          
